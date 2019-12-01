@@ -1,0 +1,295 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[1]:
+
+
+import os 
+import pandas as pd
+
+os.chdir(r"D:\Both_references\Husky CT\Capstone_Project\Phase 2") 
+
+from sklearn.ensemble import GradientBoostingRegressor
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
+from sklearn.datasets import load_boston
+from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import r2_score
+
+
+# In[2]:
+
+
+data_load = pd.read_excel("jmp_combined_data.xlsx")
+data = pd.DataFrame(data_load)
+
+
+# In[136]:
+
+
+# list(data.columns) 
+
+
+# In[3]:
+
+
+imp_columns  = data[['Land Area AC','Age','Submarket Name','Number Of Parking Spaces','population in 2019','median hh income 2019','PROPERTY Crime Score(1-100)','Property Type','Sale Price','type','Vacancy Rate','Market Rent/SF','Annual Rent Growth']]
+
+
+# In[4]:
+
+
+imp_columns.head()
+
+
+# In[5]:
+
+
+# function to obtain Categorical Features 
+def _get_categorical_features(df): 
+    feats = [col for col in list(df.columns) if df[col].dtype == 'object'] 
+    return feats 
+
+
+# function to factorize categorical features 
+def _factorize_categoricals(df, cats): 
+    for col in cats: 
+        df[col], _ = pd.factorize(df[col]) 
+    return df  
+
+
+# function to create dummy variables of categorical features 
+def _get_dummies(df, cats): 
+    for col in cats: 
+        df = pd.concat([df, pd.get_dummies(df[col], prefix=col)], axis=1) 
+    return df  
+
+
+# In[6]:
+
+
+# get categorical features 
+train_df_cats = _get_categorical_features(imp_columns) 
+
+
+# In[7]:
+
+
+print(train_df_cats)
+
+
+# In[8]:
+
+
+# factorize the categorical features from train and test data 
+train_df = _factorize_categoricals( imp_columns, train_df_cats) 
+
+
+# In[9]:
+
+
+print(train_df)
+
+
+# In[10]:
+
+
+train_df = _get_dummies( imp_columns, train_df_cats) 
+
+
+# In[11]:
+
+
+# print(train_df)
+
+
+# In[12]:
+
+
+train_df.drop(['Property Type','type_0','type_1'],axis=1,inplace=True)
+
+
+# In[13]:
+
+
+print(train_df)
+
+
+# In[14]:
+
+
+Train = train_df[train_df.type == 0]
+Test = train_df[train_df.type == 1]
+
+
+# In[15]:
+
+
+Train = Train.drop(['type'], axis=1)
+Test = Test.drop(['type'], axis=1)
+
+
+# In[16]:
+
+
+Train.head()
+
+
+# In[17]:
+
+
+X_train = Train.drop('Sale Price',axis=1) 
+y_train = Train['Sale Price'] 
+
+
+# In[18]:
+
+
+Test = Test.dropna()
+X_test = Test.drop('Sale Price',axis=1)
+y_test = Test['Sale Price'] 
+
+
+# In[19]:
+
+
+Test.shape
+
+
+# In[20]:
+
+
+#checking percent of missing values  data 
+total1 = X_test.isnull().sum().sort_values(ascending = False) 
+percent1 = (X_test.isnull().sum()/X_test.count()*100).sort_values(ascending = False) 
+missing_data  = pd.concat([total1, percent1], axis=1, keys=['Total','Percent']) 
+missing_data.head(10) 
+
+
+# In[21]:
+
+
+regressor = GradientBoostingRegressor(
+    max_depth=2,
+    n_estimators=3,
+    learning_rate=1.0
+)
+regressor.fit(X_train, y_train)
+
+
+# In[22]:
+
+
+y_pred = regressor.predict(X_test) 
+
+
+# In[23]:
+
+
+mean_absolute_error(y_test, y_pred)
+
+
+# In[24]:
+
+
+r2_score(y_test,y_pred)
+
+
+# In[25]:
+
+
+from sklearn.ensemble import RandomForestRegressor
+rfc = RandomForestRegressor() 
+rfc.fit(X_train, y_train)
+
+
+# In[26]:
+
+
+y_pred_rfc = rfc.predict(X_test) 
+
+
+# In[27]:
+
+
+mean_absolute_error(y_test, y_pred_rfc)
+
+
+# In[28]:
+
+
+r2_score(y_test,y_pred_rfc)
+
+
+# In[29]:
+
+
+X_train_columns = X_train.columns 
+
+
+# In[30]:
+
+
+# Random Forest feature importance 
+importance = pd.Series(rfc.feature_importances_) 
+importance.index = X_train_columns 
+importance.sort_values(inplace=True, ascending=False) 
+importance.plot.bar(figsize=(50,10)) 
+
+
+# In[34]:
+
+
+type(y_pred_rfc)
+
+
+# In[37]:
+
+
+arr = np.array(y_pred_rfc)
+
+
+# In[38]:
+
+
+y_results= pd.DataFrame(data=arr.flatten())
+
+
+# In[36]:
+
+
+# dataset = pd.DataFrame({'Y_results': y_pred_rfc[:, 0]})
+
+
+# In[42]:
+
+
+y_results.to_excel (r'D:\Both_references\Husky CT\Capstone_Project\Phase 2\results.xlsx')
+
+
+# In[44]:
+
+
+y_test.to_excel (r'D:\Both_references\Husky CT\Capstone_Project\Phase 2\test_results.xlsx')
+
+
+# In[171]:
+
+
+# print(y_pred_rfc,y_test)
+
+
+# In[172]:
+
+
+# print(y_test)
+
+
+# In[ ]:
+
+
+
+
+

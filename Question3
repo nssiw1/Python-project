@@ -1,0 +1,120 @@
+import numpy as np
+import pandas as pd
+
+d = pd.read_csv('bank.csv')
+y = d.outcome
+X = d[['age','campaign','duration']]
+
+def email():
+    return "yi.2.hu@uconn.edu"
+
+def netid():
+    return "YIH18012" # Enter your NetID here
+
+def q01():
+    #### Enter your answer here
+    educ_mapping = {
+        'primary':1,
+        'secondary':2,
+        'tertiary':3,
+        'unknown':0}
+    d['educ']=d['education'].map(educ_mapping)
+    ans = d.educ.mean()
+    #### End of answer
+    return "{0:.4f}".format(ans)
+
+def q02():
+    #### Enter your answer here
+    from sklearn.model_selection import train_test_split
+    X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.30,random_state=0)
+    ans = X_train.mean().mean()+X_test.mean().mean()+y_train.mean()+y_test.mean()
+    #### End of answer
+    return "{0:.4f}".format(ans)
+
+def q03():
+    #### Enter your answer here
+    from sklearn.model_selection import train_test_split
+    X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.30,random_state=0)
+    from sklearn.preprocessing import StandardScaler
+    sc = StandardScaler()
+    sc.fit(X_train)
+    X_train_std = sc.transform(X_train)
+    X_test_std = sc.transform(X_test)
+    ans = X_train_std.mean().mean()+X_test_std.mean().mean()
+    #### End of answer
+    return "{0:.4f}".format(ans)
+
+def q04():
+    from sklearn.metrics import f1_score
+    #### Enter your answer here
+    from sklearn.model_selection import train_test_split
+    X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.30,random_state=0)
+    from sklearn.preprocessing import StandardScaler
+    sc = StandardScaler()
+    sc.fit(X_train)
+    X_train_std = sc.transform(X_train)
+    X_test_std = sc.transform(X_test)
+    from sklearn.linear_model import Perceptron
+    ppn = Perceptron(max_iter=40,eta0=0.1,random_state = 0)
+    ppn.fit(X_train_std,y_train)
+    y_pred = ppn.predict(X_test_std)
+    ans = f1_score(y_test, y_pred, labels=None, pos_label=1, average='weighted', sample_weight=None)
+    #### End of answer
+    return "{0:.4f}".format(ans)
+q04()
+
+def q05():
+    from sklearn.metrics import f1_score
+    #### Enter your answer here
+    from sklearn.model_selection import train_test_split
+    X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.30,random_state=0)
+    from sklearn.preprocessing import StandardScaler
+    sc = StandardScaler()
+    sc.fit(X_train)
+    X_train_std = sc.transform(X_train)
+    X_test_std = sc.transform(X_test)
+    from sklearn.linear_model import Perceptron
+    ppn = Perceptron(max_iter=176,eta0=0.5982258272408594,random_state = 0)
+    ppn.fit(X_train_std,y_train)
+    y_pred = ppn.predict(X_test_std)
+    ans = f1_score(y_test, y_pred, labels=None, pos_label=1, average='weighted', sample_weight=None)
+    #### End of answer
+    return "{0:.4f}".format(ans)
+q05()
+
+
+def q06():
+    from sklearn.metrics import f1_score
+    #### Enter your answer here
+    from sklearn.model_selection import train_test_split
+    X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.30,random_state=0)
+    from sklearn.preprocessing import StandardScaler
+    sc = StandardScaler()
+    sc.fit(X_train)
+    X_train_std = sc.transform(X_train)
+    X_test_std = sc.transform(X_test)
+    from sklearn.linear_model import LogisticRegression
+    Ir = LogisticRegression(C=1000.0,random_state=0)
+    Ir.fit(X_train_std,y_train)
+    y_pred = Ir.predict(X_test_std)
+    ans = f1_score(y_test, y_pred, labels=None, pos_label=1, average='weighted', sample_weight=None)
+    #### End of answer
+    return "{0:.4f}".format(ans)
+
+def q07():
+    from sklearn.metrics import f1_score
+    #### Enter your answer here
+    from sklearn.model_selection import train_test_split
+    X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.30,random_state=0)
+    from sklearn.preprocessing import StandardScaler
+    sc = StandardScaler()
+    sc.fit(X_train)
+    X_train_std = sc.transform(X_train)
+    X_test_std = sc.transform(X_test)
+    from sklearn.svm import SVC
+    svm = SVC(kernel='linear',C=1.0,random_state=0)
+    svm.fit(X_train_std,y_train)
+    y_pred = svm.predict(X_test_std)
+    ans = f1_score(y_test, y_pred, labels=None, pos_label=1, average='weighted', sample_weight=None)
+    #### End of answer
+    return "{0:.4f}".format(ans)

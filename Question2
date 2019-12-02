@@ -1,0 +1,155 @@
+import numpy as np
+import pandas as pd
+import math
+import statsmodels.api as sm
+
+df = pd.read_csv("401K.csv")
+# Reading the column "mrate" as X
+X = df["mrate"]
+# Adding a column of 1's to X
+X = sm.add_constant(X)
+# Reading the column "prate" as y
+y = df["prate"]
+
+
+def email():
+    return "yi.2.hu@uconn.edu"
+
+
+def netid():
+    return "YIH18012"  # Enter your NetID here
+
+
+def q01():
+    #### Enter your answer here
+    ### Please note: write your answer below, and remember to un-comment the line (remove the # before the 'a')
+    ans = y.mean()
+    #### End of answer
+    return "{0:.4f}".format(ans)
+
+
+q01()
+
+
+def q02():
+    #### Enter your answer here
+    ans = df['mrate'].var()
+    #### End of answer
+    return "{0:.4f}".format(ans)
+
+
+q02()
+
+
+def q03():
+    #### Enter your answer here
+    ans = df['totpart'].std()
+    #### End of answer
+    return "{0:.4f}".format(ans)
+
+
+q03()
+
+
+def q04():
+    np.random.seed(10)
+    #### Enter your answer here
+    from scipy.stats import norm
+    ans = np.random.normal(5, 3, 1000)
+    #### End of answer
+    return "{0:.4f}".format(ans.mean())
+
+
+def q05():
+    np.random.seed(10)
+    a = np.empty([50000, 1])
+    #### Enter your answer here
+    # some lines of code here and below
+    # code here
+    i = 0
+    n = 500
+    while n < 501:
+        i = 0
+        while i < 50000:
+            a[i, 0] = np.random.normal(7, 4, n).mean()
+            i += 1
+        ans = a.std()
+        n += 1
+
+    # code here
+
+    # here 'a' is the array containing the sample means
+    #### End of answer
+    return "{0:.4f}".format(ans)
+
+
+q05()
+
+
+def q06():
+    from scipy.stats import norm
+    np.random.seed(10)
+    #### Enter your answer here
+    ans = np.linspace(norm(5, 3).ppf(0.1), norm(5, 3).ppf(0.9), 1000)
+    #### End of answer
+    return "{0:.4f}".format(ans.std())
+
+
+q06()
+
+
+def q07():
+    from scipy.stats import norm
+    #### Enter your answer here
+    ans = norm(10, 3).cdf(12)
+    ### End of answer
+    return "{0:.4f}".format(ans)
+
+
+q07()
+
+
+def q08():
+    from scipy.stats import norm
+    #### Enter your answer here
+    ans = 1 - norm(10, 3).cdf(8)
+    ### End of answer
+    return "{0:.4f}".format(ans)
+
+
+def q09():
+    #### Enter your answer here
+    b = np.dot(np.linalg.inv(np.dot(X.T, X)), np.dot(X.T, y))
+    #### End of answer
+    return b.sum().round()
+
+
+q09()
+
+
+def q10():
+    #### Enter your answer here
+    sst = np.dot((y - y.mean()).T, (y - y.mean()))
+    #### End of answer
+    return "{0:.4f}".format(sst)
+
+
+def q11():
+    #### Enter your answer here
+    b = np.array([83.07545543, 5.8610792])
+    model = sm.OLS(y, X)
+    results = model.fit()
+    sse = np.dot((results.predict() - y.mean()).T, (results.predict() - y.mean()))
+    #### End of answer
+    return "{0:.4f}".format(sse)
+
+
+def q12():
+    #### Enter your answer here
+    b = np.array([83.07545543, 5.8610792])
+    model = sm.OLS(y, X)
+    results = model.fit()
+    res = results.resid
+    ssr = np.dot(res.T, res)
+    #### End of answer
+    return "{0:.4f}".format(ssr)

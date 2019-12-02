@@ -1,0 +1,146 @@
+
+import numpy as np
+import pandas as pd
+
+
+d = pd.read_csv('charity.csv')
+
+d1 = pd.read_csv('charity1.csv')
+
+d1.date = pd.to_datetime(d1.date)
+
+
+
+def email():
+
+    return "yi.2.hu@uconn.edu" # Enter your email here
+
+
+
+def netid():
+
+    return "YIH18012" # Enter your NetID here
+
+
+
+def q01():
+
+    #### Enter answer 1 here
+
+   
+
+    ans = d.loc[200:375,:]['weekslast'].mean()
+
+    #### End of answer ####
+
+    return round(ans,4)
+
+q01()
+
+
+
+def q02():
+
+    #### Enter answer 2 here
+
+    ans = d.loc[(1.5>=d.mailsyear)&(d.mailsyear>=0.5)]['giftlast'].mean()
+
+    #### End of answer
+
+    return round(ans,4)
+
+q02()
+
+
+
+def q03():
+
+    #### Enter answer 3 here
+
+    ans = d.columns.values[4]
+
+    #### End of answer
+
+    return ans
+
+q03()
+
+
+
+def q04():
+
+    #### Enter answer 4 here
+
+    d['gift_per_mailing'] = d.avggift / d.mailsyear
+
+    ### End of answer
+
+    return round(d['gift_per_mailing'].mean(),4)
+
+q04()
+
+
+
+def q05():
+
+    #### Enter answer 6 here
+
+    d2 = d1.groupby(['uid','cause'])['gift'].mean()
+
+    ### End of answer
+
+    return round(d2.mean(),4)
+
+q05()
+
+
+
+def q06():
+
+    #### Enter answer 6 here
+
+    d3 = d1.groupby(['uid','cause'])['gift'].mean().reset_index()
+
+    # Your final answer should be a dataframe called d3
+
+    ### End of answer
+
+    return d3.columns.values[2]
+
+   
+
+q06()
+
+
+
+def q07():
+
+    #### Enter answer 7 here
+
+    from datetime import timedelta
+
+    ddr = pd.date_range('2017-02-06',periods=12,freq = '30D')
+
+    n=0
+
+    for i in ddr:
+
+        start_date = i 
+
+        end_date = i + timedelta(days=30)
+
+        mask = (d1['date'] >= start_date) & (d1['date']<end_date)
+
+        n += 1
+
+        d1.loc[mask,'month'] = n 
+
+    d4 = d1.groupby(['uid','month'])['gift'].sum().reset_index()
+
+    # Your final answer should be a dataframe called d4
+
+    ### End of answer
+
+    return round(d4.gift.mean(),4)
+
+q07()
